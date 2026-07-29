@@ -1,0 +1,13 @@
+.git
+.next
+node_modules
+npm-debug.log*
+.env*
+data/*.db
+data/*.db-*
+qnap-upload
+README.md
+QNAP_DEPLOY.md
+deploy
+Dockerfile
+docker-compose.yml

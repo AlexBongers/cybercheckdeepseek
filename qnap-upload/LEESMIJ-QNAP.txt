@@ -1,0 +1,22 @@
+Cybercheck uploadpakket voor QNAP Container Station
+
+Bestanden:
+- cybercheck_hu_amd64.tar: Docker image archive voor QNAP TS-251D / 64-bit x86
+- docker-compose.yml: compose-configuratie voor Container Station
+
+Aanbevolen gebruik via SSH:
+1. Upload cybercheck_hu_amd64.tar en docker-compose.yml naar /share/Container/cybercheck
+2. Log in via SSH op de NAS
+3. Voer uit:
+
+   cd /share/Container/cybercheck
+   docker load -i cybercheck_hu_amd64.tar
+   mkdir -p /share/Container/cybercheck/data
+   docker compose up -d
+
+De app draait daarna intern op poort 3000.
+De SQLite database wordt bewaard in:
+/share/Container/cybercheck/data/cybercheck.db
+
+Demo login:
+Gebruik voor een lokale demo een zelfgekozen tijdelijk wachtwoord. Zet geen wachtwoord in dit uploadpakket. Gebruik voor productie de runtime-variabelen ADMIN_EMAIL en ADMIN_PASSWORD.
