@@ -7,7 +7,7 @@ const dataDir = path.join(process.cwd(), 'data')
 const dbPath = process.env.SQLITE_DB_PATH || path.join(dataDir, 'cybercheck.db')
 const password = process.env.DEMO_PASSWORD
 if (!password) {
-  throw new Error('Set DEMO_PASSWORD before running the seed script.')
+  throw new Error('Set DEMO_PASSWORD to a temporary local demo password before running the seed script.')
 }
 
 mkdirSync(dataDir, { recursive: true })
@@ -169,6 +169,7 @@ insertNotification.run(randomUUID(), users.entrepreneur2.id, match2, 'match_foun
 insertNotification.run(randomUUID(), users.student4.id, match2, 'match_found')
 
 console.log(`Demo database seeded: ${dbPath}`)
-console.log('Demo accounts seeded. The password was supplied through DEMO_PASSWORD and is not printed.')\nconsole.log('Admin: admin@cybercheck.test')
+console.log('Demo accounts seeded. The password was supplied through DEMO_PASSWORD and is not printed.')
+console.log('Admin: admin@cybercheck.test')
 console.log('Entrepreneur: sanne@demo-cybercheck.nl')
 console.log('Student: lisa@demo-cybercheck.nl')
