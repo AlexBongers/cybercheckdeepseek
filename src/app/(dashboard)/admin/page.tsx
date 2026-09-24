@@ -12,6 +12,8 @@ import {
 } from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Users, Building2, CheckCircle2, Clock, Link2 } from 'lucide-react'
+import { DeleteEntrepreneurButton } from './delete-entrepreneur-button'
+import { DeleteStudentGroupButton } from './delete-student-group-button'
 import type { Profile, StudentGroup, Match, MatchStatus } from '@/types/database'
 import { getSessionUserId } from '@/lib/session'
 import {
@@ -350,13 +352,14 @@ export default async function AdminPage() {
                     <TableHead>Bedrijf</TableHead>
                     <TableHead>E-mail</TableHead>
                     <TableHead>Telefoon</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead className="sticky right-[148px] z-20 min-w-[116px] border-l border-slate-200 bg-white">Status</TableHead>
+                    <TableHead className="sticky right-0 z-30 w-[148px] min-w-[148px] border-l border-slate-200 bg-white text-right">Verwijderen</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {allEntrepreneurs.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center py-12 text-slate-500">
+                      <TableCell colSpan={6} className="text-center py-12 text-slate-500">
                         Nog geen ondernemers geregistreerd.
                       </TableCell>
                     </TableRow>
@@ -364,15 +367,21 @@ export default async function AdminPage() {
                     allEntrepreneurs.map((e) => {
                       const hasMatch = activeMatches.some((m) => m.entrepreneur_id === e.id)
                       return (
-                        <TableRow key={e.id}>
+                        <TableRow key={e.id} className="group">
                           <TableCell className="font-medium">{e.full_name}</TableCell>
                           <TableCell>{e.company_name || '-'}</TableCell>
                           <TableCell>{e.email}</TableCell>
                           <TableCell>{e.phone || '-'}</TableCell>
-                          <TableCell>
+                          <TableCell className="sticky right-[148px] z-10 min-w-[116px] border-l border-slate-200 bg-white group-hover:bg-muted/50">
                             <Badge variant={hasMatch ? 'default' : 'secondary'}>
                               {hasMatch ? 'Gematcht' : 'Onbematcht'}
                             </Badge>
+                          </TableCell>
+                          <TableCell className="sticky right-0 z-20 w-[148px] min-w-[148px] border-l border-slate-200 bg-white text-right group-hover:bg-muted/50">
+                            <DeleteEntrepreneurButton
+                              entrepreneurId={e.id}
+                              entrepreneurName={e.company_name || e.full_name}
+                            />
                           </TableCell>
                         </TableRow>
                       )
@@ -394,13 +403,14 @@ export default async function AdminPage() {
                     <TableHead>Groepsnaam</TableHead>
                     <TableHead>Leden</TableHead>
                     <TableHead>Uitnodigingscode</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead className="sticky right-[148px] z-20 min-w-[116px] border-l border-slate-200 bg-white">Status</TableHead>
+                    <TableHead className="sticky right-0 z-30 w-[148px] min-w-[148px] border-l border-slate-200 bg-white text-right">Verwijderen</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {allGroups.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={4} className="text-center py-12 text-slate-500">
+                      <TableCell colSpan={5} className="text-center py-12 text-slate-500">
                         Nog geen studentengroepen geregistreerd.
                       </TableCell>
                     </TableRow>
@@ -409,7 +419,7 @@ export default async function AdminPage() {
                       const hasMatch = activeMatches.some((m) => m.student_group_id === g.id)
                       const members = groupMembers.get(g.id) ?? []
                       return (
-                        <TableRow key={g.id}>
+                        <TableRow key={g.id} className="group">
                           <TableCell className="font-medium">{g.name}</TableCell>
                           <TableCell>
                             <div className="space-y-1">
@@ -424,10 +434,13 @@ export default async function AdminPage() {
                               {g.invite_code}
                             </code>
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="sticky right-[148px] z-10 min-w-[116px] border-l border-slate-200 bg-white group-hover:bg-muted/50">
                             <Badge variant={hasMatch ? 'default' : 'secondary'}>
                               {hasMatch ? 'Gematcht' : 'Onbematcht'}
                             </Badge>
+                          </TableCell>
+                          <TableCell className="sticky right-0 z-20 w-[148px] min-w-[148px] border-l border-slate-200 bg-white text-right group-hover:bg-muted/50">
+                            <DeleteStudentGroupButton groupId={g.id} groupName={g.name} />
                           </TableCell>
                         </TableRow>
                       )

@@ -236,6 +236,48 @@ export async function listEntrepreneurs() {
   return rows.map(profileFromRow)
 }
 
+export async function deleteEntrepreneur(entrepreneurId: string) {
+  const id = entrepreneurId.trim()
+  if (!id || id.length > 128) return false
+
+  const db = await getDb()
+  const entrepreneur = await db.prepare(
+    `SELECT id FROM profiles WHERE id = ? AND role = 'entrepreneur'`,
+  ).bind(id).first<{ id: string }>()
+  if (!entrepreneur) return false
+
+  await db.batch([
+    db.prepare(
+      `DELETE FROM notifications
+       WHERE user_id = ? OR match_id IN (SELECT id FROM matches WHERE entrepreneur_id = ?)`,
+    ).bind(id, id),
+    db.prepare('DELETE FROM matches WHERE entrepreneur_id = ?').bind(id),
+    db.prepare("DELETE FROM availability_slots WHERE owner_type = 'entrepreneur' AND owner_id = ?").bind(id),
+    db.prepare("DELETE FROM profiles WHERE id = ? AND role = 'entrepreneur'").bind(id),
+  ])
+  return true
+}
+
+export async function deleteStudentGroup(groupId: string) {
+  const id = groupId.trim()
+  if (!id || id.length > 128) return false
+
+  const db = await getDb()
+  const group = await db.prepare('SELECT id FROM student_groups WHERE id = ?').bind(id).first<{ id: string }>()
+  if (!group) return false
+
+  await db.batch([
+    db.prepare(
+      `DELETE FROM notifications
+       WHERE match_id IN (SELECT id FROM matches WHERE student_group_id = ?)`,
+    ).bind(id),
+    db.prepare('DELETE FROM matches WHERE student_group_id = ?').bind(id),
+    db.prepare("DELETE FROM availability_slots WHERE owner_type = 'student_group' AND owner_id = ?").bind(id),
+    db.prepare('DELETE FROM student_groups WHERE id = ?').bind(id),
+  ])
+  return true
+}
+
 export async function createStudentGroup(name: string, memberIds: string[], inviteCode?: string) {
   const id = randomUUID()
   const code = inviteCode ?? randomUUID().slice(0, 6).toUpperCase()
